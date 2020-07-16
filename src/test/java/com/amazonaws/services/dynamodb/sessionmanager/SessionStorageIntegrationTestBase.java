@@ -14,23 +14,24 @@
  */
 package com.amazonaws.services.dynamodb.sessionmanager;
 
-import static org.hamcrest.Matchers.empty;
-import static org.junit.Assert.assertThat;
-
-import java.util.List;
-
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-
 import com.amazonaws.services.dynamodb.sessionmanager.converters.SessionConverter;
 import com.amazonaws.services.dynamodb.sessionmanager.util.DynamoUtils;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper.FailedBatch;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
-import com.amazonaws.services.dynamodbv2.util.Tables;
+import com.amazonaws.services.dynamodbv2.util.TableUtils;
 import com.amazonaws.test.AWSTestBase;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+
+import java.util.List;
+
+import static org.hamcrest.Matchers.empty;
+import static org.junit.Assert.assertThat;
+
+// import com.amazonaws.services.dynamodbv2.util.Tables;
 
 /**
  * Base class for tests interacting directly with DynamoDB. Creates a unique table per test class
@@ -47,7 +48,7 @@ public class SessionStorageIntegrationTestBase extends AWSTestBase {
         dynamoClient = new AmazonDynamoDBClient(credentials);
         tableName = getUniqueTableName();
         DynamoUtils.createSessionTable(dynamoClient, tableName, 10L, 10L);
-        Tables.waitForTableToBecomeActive(dynamoClient, tableName);
+        TableUtils.waitUntilActive(dynamoClient, tableName);
         dynamoMapper = DynamoUtils.createDynamoMapper(dynamoClient, tableName);
     }
 
